@@ -1,10 +1,10 @@
-FROM python:2.7-stretch
+FROM python:3.6-stretch
 
-RUN apt-get update && apt-get install curl lzop pv postgresql-client-9.6 cron -y \
+RUN apt-get update && apt-get install curl lzop pv postgresql-client-10 cron -y \
      && rm -rf /var/lib/apt/lists/*
 
 ADD https://bootstrap.pypa.io/get-pip.py .
-RUN python get-pip.py
+RUN python3 get-pip.py
 
 WORKDIR /usr/src/app
         
