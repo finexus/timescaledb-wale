@@ -1,16 +1,34 @@
-FROM python:3.6-stretch
+FROM ubuntu:16.04
 
-RUN apt-get update && apt-get install curl lzop pv postgresql-client-10 cron -y \
-     && rm -rf /var/lib/apt/lists/*
+# install baseline OS requirements and PPA for Python3.6
+RUN apt-get -y update \
+	&& apt-get install -y --no-install-recommends apt-utils software-properties-common vim nano wget \
+	&& add-apt-repository ppa:jonathonf/python-3.6
 
-ADD https://bootstrap.pypa.io/get-pip.py .
-RUN python3 get-pip.py
+# install Python 3.6
+RUN apt-get update -y \
+	&& apt-get install -y build-essential python3.6 python3-pip
+
+# add PPA for PostgreSQL
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
+RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | \
+  apt-key add -
+
+# install PostgreSQL 10 and wal-e dependencies
+RUN apt-get -y update \
+	&& apt-get install -y curl lzop pv libpq5 postgresql-common postgresql-client-10 cron \
+     	&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
-        
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
 
+# upgrade pip
+RUN python3 -m pip install --upgrade pip
+
+# install wal-e requirements
+COPY requirements.txt ./
+RUN python3 -m pip install --no-cache-dir -r requirements.txt
+
+# finalize container with TimescaleDB + WAL-E scripts
 COPY src/wale-rest.py .
 COPY start.sh .
 COPY backup_push.sh .

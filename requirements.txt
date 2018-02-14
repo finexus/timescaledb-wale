@@ -1,4 +1,5 @@
 flask
-wal-e==1.1.0
-boto3==1.5.27
+boto3
+wal-e[aws,azure,google,swift]
+
 
