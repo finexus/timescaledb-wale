@@ -34,4 +34,6 @@ COPY start.sh .
 COPY backup_push.sh .
 RUN chmod +x backup_push.sh
 
+EXPOSE 5000
 CMD [ "bash", "./start.sh" ]
+#ENTRYPOINT ["tail", "-f", "/dev/null"]

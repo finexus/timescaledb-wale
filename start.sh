@@ -19,7 +19,7 @@ CRON_TIMING=${CRON_TIMING:-'0 0 * * *'}
 while [ ! -f $WALE_INIT_LOCKFILE ] ;
 do
     sleep 1
-    echo 'waiting for timescaledb startup script'
+    echo "$(date '+%Y-%m-%d %H:%M:%S') :: waiting for timescaledb startup script"
 done
 
 # Setup cron
@@ -66,4 +66,4 @@ if [ -f $WALE_INIT_LOCKFILE ] ; then
     echo "Lock file still around!"
 fi
 
-python ./wale-rest.py
+python3 ./wale-rest.py
